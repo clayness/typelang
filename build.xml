@@ -8,9 +8,9 @@
 	<target name="typelang-check-parser">
 		<condition property="typelang.parser.uptodate">
 			<and>
-				<uptodate srcfile="src/typelang/TypeLang.g" targetfile="src/typelang/parser/TypeLangParser.java" />
-				<uptodate srcfile="src/typelang/TypeLang.g" targetfile="src/typelang/parser/TypeLangLexer.java" />
-				<uptodate srcfile="src/typelang/TypeLang.g" targetfile="src/typelang/parser/TypeLangListener.java" />
+				<uptodate srcfile="src/typelang/TypeLang.g4" targetfile="src/typelang/parser/TypeLangParser.java" />
+				<uptodate srcfile="src/typelang/TypeLang.g4" targetfile="src/typelang/parser/TypeLangLexer.java" />
+				<uptodate srcfile="src/typelang/TypeLang.g4" targetfile="src/typelang/parser/TypeLangListener.java" />
 			</and>
 		</condition>
 	</target>
@@ -20,7 +20,7 @@
 			<arg value="-o" />
 			<arg value="parser/" />
 			<arg value="-no-listener" />
-			<arg value="TypeLang.g" />
+			<arg value="TypeLang.g4" />
 		</java>
 	</target>
 

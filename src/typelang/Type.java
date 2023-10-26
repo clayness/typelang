@@ -3,223 +3,215 @@ package typelang;
 import java.util.List;
 
 public interface Type {
-	public String tostring();
+    String tostring();
 
-	public boolean typeEqual(Type other);
+    boolean typeEqual(Type other);
 
-	static class ErrorT implements Type {
-		String _message;
+    class ErrorT implements Type {
+        String _message;
 
-		public ErrorT(String message) {
-			_message = message;
-		}
+        public ErrorT(String message) {
+            _message = message;
+        }
 
-		public String tostring() {
-			return "Type error: " + _message;
-		}
+        public String tostring() {
+            return "Type error: " + _message;
+        }
 
-		public boolean typeEqual(Type other) {
-			return other == this;
-		}
-	}
+        public boolean typeEqual(Type other) {
+            return other == this;
+        }
+    }
 
-	static class UnitT implements Type {
-		private static final UnitT _instance = new UnitT();
+    class UnitT implements Type {
+        private static final UnitT _instance = new UnitT();
 
-		public static UnitT getInstance() {
-			return _instance;
-		}
+        public static UnitT getInstance() {
+            return _instance;
+        }
 
-		public String tostring() {
-			return "unit";
-		}
+        public String tostring() {
+            return "unit";
+        }
 
-		public boolean typeEqual(Type other) {
-			return other == this;
-		}
-	}
+        public boolean typeEqual(Type other) {
+            return other == this;
+        }
+    }
 
-	static class BoolT implements Type {
-		private static final BoolT _instance = new BoolT();
+    class BoolT implements Type {
+        private static final BoolT _instance = new BoolT();
 
-		public static BoolT getInstance() {
-			return _instance;
-		}
+        public static BoolT getInstance() {
+            return _instance;
+        }
 
-		public String tostring() {
-			return "bool";
-		}
+        public String tostring() {
+            return "bool";
+        }
 
-		public boolean typeEqual(Type other) {
-			return other == this;
-		}
-	}
+        public boolean typeEqual(Type other) {
+            return other == this;
+        }
+    }
 
-	static class StringT implements Type {
-		private static final StringT _instance = new StringT();
+    class StringT implements Type {
+        private static final StringT _instance = new StringT();
 
-		public static StringT getInstance() {
-			return _instance;
-		}
+        public static StringT getInstance() {
+            return _instance;
+        }
 
-		public String tostring() {
-			return "string";
-		}
+        public String tostring() {
+            return "string";
+        }
 
-		public boolean typeEqual(Type other) {
-			return other == this;
-		}
-	}
+        public boolean typeEqual(Type other) {
+            return other == this;
+        }
+    }
 
-	static class NumT implements Type {
-		private static final NumT _instance = new NumT();
+    class NumT implements Type {
+        private static final NumT _instance = new NumT();
 
-		public static NumT getInstance() {
-			return _instance;
-		}
+        public static NumT getInstance() {
+            return _instance;
+        }
 
-		public String tostring() {
-			return "num";
-		}
+        public String tostring() {
+            return "num";
+        }
 
-		public boolean typeEqual(Type other) {
-			return other == this;
-		}
-	}
+        public boolean typeEqual(Type other) {
+            return other == this;
+        }
+    }
 
-	static class PairT implements Type {
-		protected Type _fst;
-		protected Type _snd;
+    class PairT implements Type {
+        protected Type _fst;
+        protected Type _snd;
 
-		public PairT(Type fst, Type snd) {
-			_fst = fst;
-			_snd = snd;
-		}
+        public PairT(Type fst, Type snd) {
+            _fst = fst;
+            _snd = snd;
+        }
 
-		public Type fst() {
-			return _fst;
-		}
+        public Type fst() {
+            return _fst;
+        }
 
-		public Type snd() {
-			return _snd;
-		}
+        public Type snd() {
+            return _snd;
+        }
 
-		public java.lang.String tostring() {
-			return "(" + _fst.tostring() + " " + _snd.tostring() + ")";
-		}
+        public java.lang.String tostring() {
+            return "(" + _fst.tostring() + " " + _snd.tostring() + ")";
+        }
 
-		public boolean typeEqual(Type other) {
-			if (other instanceof PairT) {
-				PairT pt = (PairT) other;
+        public boolean typeEqual(Type other) {
+            if (other instanceof PairT pt) {
+                return _fst.typeEqual(pt._fst) && _snd.typeEqual(pt._snd);
+            }
+            return false;
+        }
+    }
 
-				return _fst.typeEqual(pt._fst) && _snd.typeEqual(pt._snd);
-			}
-			return false;
-		}
-	}
+    class ListT extends PairT implements Type {
+        public  ListT(Type type) {
+            super(type, null);
 
-	static class ListT extends PairT implements Type {
-		public ListT(Type type) {
-			super(type, null);
+            _snd = this;
+        }
 
-			_snd = this;
-		}
+        public java.lang.String tostring() {
+            return "List<" + _fst.tostring() + ">";
+        }
 
-		public java.lang.String tostring() {
-			return "List<" + _fst.tostring() + ">";
-		}
+        public boolean typeEqual(Type other) {
+            if (other instanceof ListT lt) {
+                return _fst.typeEqual(lt._fst);
+            } else if (other instanceof PairT pt) {
+                return _fst.typeEqual(pt._fst) && _snd.typeEqual(pt._snd);
+            }
+            return false;
+        }
+    }
 
-		public boolean typeEqual(Type other) {
-			if (other instanceof ListT) {
-				ListT lt = (ListT) other;
+    class FuncT implements Type {
+        protected List<Type> _argTypes;
+        protected Type _returnType;
 
-				return _fst.typeEqual(lt._fst);
-			} else if (other instanceof PairT) {
-				PairT pt = (PairT) other;
-				
-				return _fst.typeEqual(pt._fst) && _snd.typeEqual(pt._snd);
-			}
-			return false;
-		}
-	}
+        public FuncT(List<Type> argTypes, Type returnType) {
+            _argTypes = argTypes;
+            _returnType = returnType;
+        }
 
-	static class FuncT implements Type {
-		protected List<Type> _argTypes;
-		protected Type _returnType;
+        public List<Type> argTypes() {
+            return _argTypes;
+        }
 
-		public FuncT(List<Type> argTypes, Type returnType) {
-			_argTypes = argTypes;
-			_returnType = returnType;
-		}
+        public Type returnType() {
+            return _returnType;
+        }
 
-		public List<Type> argTypes() {
-			return _argTypes;
-		}
+        public java.lang.String tostring() {
+            StringBuilder sb = new StringBuilder();
+            int size = _argTypes.size();
+            int i = 0;
+            sb.append("(");
+            for (Type type : _argTypes) {
+                sb.append(type.tostring());
+                if (i != size - 1) {
+                    sb.append(", ");
+                }
 
-		public Type returnType() {
-			return _returnType;
-		}
+                i++;
+            }
+            sb.append(" -> ");
+            sb.append(_returnType.tostring());
+            sb.append(")");
+            return sb.toString();
+        }
 
-		public java.lang.String tostring() {
-			StringBuffer sb = new StringBuffer();
-			int size = _argTypes.size();
-			int i = 0;
-			sb.append("(");
-			for (Type type : _argTypes) {
-				sb.append(type.tostring());
-				if (i != size - 1) {
-					sb.append(", ");
-				}
+        public boolean typeEqual(Type other) {
+            if (other instanceof FuncT ft) {
 
-				i++;
-			}
-			sb.append(" -> ");
-			sb.append(_returnType.tostring());
-			sb.append(")");
-			return sb.toString();
-		}
+                List<Type> argTypes = ft._argTypes;
+                int size = _argTypes.size();
+                if (argTypes.size() == size) {
+                    for (int i = 0; i < size; i++) {
+                        if (!argTypes.get(i).typeEqual(_argTypes.get(i))) {
+                            return false;
+                        }
+                    }
 
-		public boolean typeEqual(Type other) {
-			if (other instanceof FuncT) {
-				FuncT ft = (FuncT) other;
+                    return _returnType.typeEqual(ft._returnType);
+                }
+            }
+            return false;
+        }
+    }
 
-				List<Type> argTypes = ft._argTypes;
-				int size = _argTypes.size();
-				if (argTypes.size() == size) {
-					for (int i = 0; i < size; i++) {
-						if (!argTypes.get(i).typeEqual(_argTypes.get(i))) {
-							return false;
-						}
-					}
+    class RefT implements Type {
+        protected Type _nestType;
 
-					return _returnType.typeEqual(ft._returnType);
-				}
-			}
-			return false;
-		}
-	}
+        public RefT(Type nestType) {
+            _nestType = nestType;
+        }
 
-	static class RefT implements Type {
-		protected Type _nestType;
+        public Type nestType() {
+            return _nestType;
+        }
 
-		public RefT(Type nestType) {
-			_nestType = nestType;
-		}
+        public java.lang.String tostring() {
+            return "Ref " + _nestType.tostring();
+        }
 
-		public Type nestType() {
-			return _nestType;
-		}
-
-		public java.lang.String tostring() {
-			return "Ref " + _nestType.tostring();
-		}
-
-		public boolean typeEqual(Type other) {
-			if (other instanceof RefT) {
-				RefT rt = (RefT) other;
-				return _nestType.typeEqual(rt._nestType);
-			}
-			return false;
-		}
-	}
+        public boolean typeEqual(Type other) {
+            if (other instanceof RefT rt) {
+                return _nestType.typeEqual(rt._nestType);
+            }
+            return false;
+        }
+    }
 }

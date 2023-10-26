@@ -2,9 +2,8 @@ package typelang;
 
 /**
  * Representation of a heap, which maps references to values.
- * 
- * @author hridesh
  *
+ * @author hridesh
  */
 public interface Heap {
 
@@ -16,50 +15,48 @@ public interface Heap {
 
     Value free(Value.RefVal value);
 
-    static public class Heap16Bit implements Heap {
-	static final int HEAP_SIZE = 65_536;
+    class Heap16Bit implements Heap {
+        static final int HEAP_SIZE = 65_536;
 
-	Value[] _rep = new Value[HEAP_SIZE];
-	int index = 0;
+        Value[] _rep = new Value[HEAP_SIZE];
+        int index = 0;
 
-	public Value ref(Value value) {
-	    if (index >= HEAP_SIZE)
-		return new Value.DynamicError("Out of memory error");
-	    Value.RefVal new_loc = new Value.RefVal(index);
-	    _rep[index++] = value;
-	    return new_loc;
-	}
+        public Value ref(Value value) {
+            if (index >= HEAP_SIZE) {
+                return new Value.DynamicError("Out of memory error");
+            }
+            Value.RefVal new_loc = new Value.RefVal(index);
+            _rep[index++] = value;
+            return new_loc;
+        }
 
-	public Value deref(Value.RefVal loc) {
-	    try {
-		return _rep[loc.loc()];
-	    } catch (ArrayIndexOutOfBoundsException e) {
-		return new Value.DynamicError(
-			"Segmentation fault at access " + loc);
-	    }
-	}
+        public Value deref(Value.RefVal loc) {
+            try {
+                return _rep[loc.loc()];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return new Value.DynamicError("Segmentation fault at access " + loc);
+            }
+        }
 
-	public Value setref(Value.RefVal loc, Value value) {
-	    try {
-		return _rep[loc.loc()] = value;
-	    } catch (ArrayIndexOutOfBoundsException e) {
-		return new Value.DynamicError(
-			"Segmentation fault at access " + loc);
-	    }
-	}
+        public Value setref(Value.RefVal loc, Value value) {
+            try {
+                return _rep[loc.loc()] = value;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return new Value.DynamicError("Segmentation fault at access " + loc);
+            }
+        }
 
-	public Value free(Value.RefVal loc) {
-	    try {
-		_rep[loc.loc()] = null;
-		return loc;
-	    } catch (ArrayIndexOutOfBoundsException e) {
-		return new Value.DynamicError(
-			"Segmentation fault at access " + loc);
-	    }
-	}
+        public Value free(Value.RefVal loc) {
+            try {
+                _rep[loc.loc()] = null;
+                return loc;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                return new Value.DynamicError("Segmentation fault at access " + loc);
+            }
+        }
 
-	public Heap16Bit() {
-	}
+        public Heap16Bit() {
+        }
     }
 
 }

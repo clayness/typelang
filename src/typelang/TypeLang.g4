@@ -373,7 +373,9 @@ unittype returns [UnitT ty] :
  Deref : 'deref' ;
  Assign : 'set!' ;
  Free : 'free' ;
- 
+
+ //------------------------------------------------------
+ // Lexer tokens for new type definitions
  Num : 'num' ;
  Bool : 'bool' ;
  ListT : 'List' ;
