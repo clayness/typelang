@@ -1,45 +1,25 @@
-*Lang: A family of pedagogical interpreters 
-========
+# *Lang: A family of pedagogical interpreters
 
-This repository contains code and associated documents for each chapter in the 
-textbook "An Experiential Introduction to Principles of Programming Languages" by Hridesh 
-Rajan. Please report errors and difficulties to the author at hridesh@iastate.edu
+------
 
-This framework requires that you have latest versions of Java as well as Ant
-installed on your computer. 
+This repository contains code and associated documents for each chapter in the
+textbook "An Experiential Introduction to Principles of Programming Languages" by Hridesh
+Rajan, updated and modernized by Clay Stevens.
 
-# Organization
+Please report errors and difficulties via the "Issues" tab on GitHub.
 
-This code is organized as follows:
+## Build
 
-- build.xml: This is the ant build file that contains the target parser for generating 
-  parsers for all programming languages. You should run it as a ant script to remove 
-  "*Parser not found*" errors from your code.
-  
-- src: The source directory that contains source code for the language e.g. Arithlang.
+------
 
-- build: The build directory that contains generated classfiles. Note that this 
-  directory must be called build in order for the interpreter to run program 
-  files correctly. 
-  
-- lib: libraries e.g. antlr jar file. These files must be on the build path of 
-  the project.  
-  
-# Run the Interpreters 
+*Lang is built using the [Gradle](https://gradle.org) build tool and includes a
+Gradle wrapper (v8.10). To use *Lang:
 
-You can run the interpreters as follows.
- - Build the parsers by running the build.xml. You can do that from command-line
-  by writing 
-     
-     ant build.xml or simply ant
-     
-  From within the Eclipse, you can build the parsers by right clicking on the 
-  build.xml file and selecting "Run As" followed by "Ant Build".
-  
- - Refresh your project.
- 
- - Select "Interpreter.java", right click, and select "Run As" -> "Java Application".
- 
-  
-  
+* Clone this repository
+* Run `./gradlew build` to build the code
+* Run `./gradlew run` to run the interpreter
+
+*Lang can also be built, debugged, and run in many IDEs (e.g., IntelliJ, Eclipse) using their
+standard Gradle project import instructions. 
+
 

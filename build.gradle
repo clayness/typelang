@@ -1,0 +1,32 @@
+plugins {
+    id "idea"
+    id "eclipse"
+    id "java"
+    id "antlr"
+    id "application"
+}
+
+compileJava {
+    sourceCompatibility = 21
+    targetCompatibility = 21
+}
+
+application {
+    mainClass = 'typelang.Interpreter'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    antlr "org.antlr:antlr4:4.13.2"
+}
+
+run {
+    standardInput = System.in
+}
+
+generateGrammarSource {
+    arguments += ["-lib", "./grammars", "-no-listener", "-package", "typelang.parser; import static typelang.AST.*"]
+}
